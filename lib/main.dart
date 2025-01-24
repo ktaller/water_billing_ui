@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:water_billing_ui/screens/form_page.dart';
 import 'registration_page.dart'; // Import the registration page
 
 void main() {
@@ -11,11 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Registration',
+      title: 'Flutter Form App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RegistrationPage(), // Show the RegistrationPage when the app starts
+      home: FormPage(), // Show the RegistrationPage when the app starts
     );
   }
 }
