@@ -7,11 +7,13 @@ class FormPage extends StatelessWidget {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final FormController _formController = FormController();
 
+  FormPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Form'),
+        title: Text('Customer details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

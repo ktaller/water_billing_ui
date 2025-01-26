@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:water_billing_ui/screens/form_page.dart';
-import 'registration_page.dart'; // Import the registration page
+import 'package:water_billing_ui/screens/customers_list.dart';
+import 'package:water_billing_ui/screens/user_registration.dart'; // Import the registration page
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: FormPage(), // Show the RegistrationPage when the app starts
+      home: CustomersPage(), // Set CustomersPage as the initial page
     );
   }
 }
