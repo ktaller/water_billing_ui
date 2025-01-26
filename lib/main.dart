@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:water_billing_ui/screens/customers_list.dart';
-import 'package:water_billing_ui/screens/user_registration.dart'; // Import the registration page
 
 void main() {
   runApp(const MyApp());

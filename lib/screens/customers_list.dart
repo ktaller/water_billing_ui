@@ -4,7 +4,7 @@ import 'package:water_billing_ui/screens/user_registration.dart';
 import 'meters_page.dart';
 
 class CustomersPage extends StatefulWidget {
-  const CustomersPage({Key? key}) : super(key: key);
+  const CustomersPage({super.key});
 
   @override
   State<CustomersPage> createState() => _CustomersPageState();

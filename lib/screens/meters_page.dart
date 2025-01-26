@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'add_meter_page.dart';
 import 'meter_details_page.dart';
 
 class MetersPage extends StatefulWidget {
@@ -77,9 +78,10 @@ class _MetersPageState extends State<MetersPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add a new meter (placeholder action for now)
-          setState(() {
-            _meters.add('Meter #${_meters.length + 12345}');
-          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddMeterPage()),
+          );
         },
         child: const Icon(Icons.add),
       ),
