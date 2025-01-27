@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:water_billing_ui/constants/constants.dart';
 import 'package:water_billing_ui/screens/user_registration.dart';
 
 import 'meters_page.dart';
@@ -13,18 +17,7 @@ class CustomersPage extends StatefulWidget {
 class _CustomersPageState extends State<CustomersPage> {
   final TextEditingController _searchController = TextEditingController();
   final List<Map<String, String>> _customers = [
-    {'name': 'John Doe', 'phone': '+254700123456'},
-    {'name': 'Jane Smith', 'phone': '+254700654321'},
-    {'name': 'Michael Brown', 'phone': '+254700789123'},
-    {'name': 'John Doe', 'phone': '+254700123456'},
-    {'name': 'Jane Smith', 'phone': '+254700654321'},
-    {'name': 'Michael Brown', 'phone': '+254700789123'},
-    {'name': 'John Doe', 'phone': '+254700123456'},
-    {'name': 'Jane Smith', 'phone': '+254700654321'},
-    {'name': 'Michael Brown', 'phone': '+254700789123'},
-    {'name': 'John Doe', 'phone': '+254700123456'},
-    {'name': 'Jane Smith', 'phone': '+254700654321'},
-    {'name': 'Michael Brown', 'phone': '+254700789123'},
+    {'id': '9999', 'name': 'John Doe', 'phone': '+254700123456'},
   ];
 
   List<Map<String, String>> _filteredCustomers = [];
@@ -32,8 +25,42 @@ class _CustomersPageState extends State<CustomersPage> {
   @override
   void initState() {
     super.initState();
-    _filteredCustomers = _customers;
+    // _filteredCustomers = _customers;
     _searchController.addListener(_filterCustomers);
+    _fetchCustomers();
+  }
+
+  void _fetchCustomers() async {
+    // Replace with your actual API URL
+    final url = Uri.parse('${Constants.SERVER_BASE_URL_API}/customers');
+
+    try {
+      final response = await http.post(url);
+
+      if (response.statusCode == 200) {
+        final decodedData = jsonDecode(response.body) as List;
+        setState(() {
+          _customers.clear();
+          _customers.addAll(decodedData.map((customer) {
+            return {
+              'id': customer['id'].toString(),
+              'name': customer['firstName'] + ' ' + customer["lastName"],
+              'phone': customer['phoneNumber'],
+            };
+          }));
+
+          print("Customers: $_customers");
+
+          _filteredCustomers = _customers; // Update filtered list as well
+        });
+      } else {
+        // Handle API errors
+        print('Error: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      // Handle network errors
+      print('Error fetching customers: $e');
+    }
   }
 
   void _filterCustomers() {
@@ -41,8 +68,8 @@ class _CustomersPageState extends State<CustomersPage> {
     setState(() {
       _filteredCustomers = _customers
           .where((customer) =>
-      customer['name']!.toLowerCase().contains(query) ||
-          customer['phone']!.contains(query))
+              customer['name']!.toLowerCase().contains(query) ||
+              customer['phone']!.contains(query))
           .toList();
     });
   }
@@ -79,28 +106,33 @@ class _CustomersPageState extends State<CustomersPage> {
           Expanded(
             child: _filteredCustomers.isNotEmpty
                 ? ListView.builder(
-              itemCount: _filteredCustomers.length,
-              itemBuilder: (context, index) {
-                final customer = _filteredCustomers[index];
-                return ListTile(
-                  title: Text(customer['name']!),
-                  subtitle: Text(customer['phone']!),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MetersPage()),
-                    );
-                  },
-                );
-              },
-            )
+                    itemCount: _filteredCustomers.length,
+                    itemBuilder: (context, index) {
+                      final customer = _filteredCustomers[index];
+                      return ListTile(
+                        title: Text(customer['name']!),
+                        subtitle: Text(customer['phone']!),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                // builder: (context) => const MetersPage()),
+                                // pass the customer ID and name to the MetersPage
+                                builder: (context) => MetersPage(
+                                      customerId: int.parse(customer['id']!),
+                                      customerName: customer['name']!,
+                                    )),
+                          );
+                        },
+                      );
+                    },
+                  )
                 : const Center(
-              child: Text(
-                'No customers found',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
+                    child: Text(
+                      'No customers found',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
           ),
         ],
       ),
