@@ -8,7 +8,7 @@ import 'package:water_billing_ui/constants/constants.dart';
 class AddMeterPage extends StatefulWidget {
   final int customerId;
 
-  const AddMeterPage({required this.customerId});
+  const AddMeterPage({super.key, required this.customerId});
 
   @override
   State<AddMeterPage> createState() => _AddMeterPageState();
