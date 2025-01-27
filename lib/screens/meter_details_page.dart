@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'meter_reading_form_page.dart';
 
 class MeterDetailsPage extends StatefulWidget {
-  const MeterDetailsPage({super.key});
+  // const MeterDetailsPage({super.key});
+  final String meterNumber;
+
+  const MeterDetailsPage({required this.meterNumber});
 
   @override
   State<MeterDetailsPage> createState() => _MeterDetailsPageState();
@@ -16,38 +19,39 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
     {'date': '2024-11-26', 'reading': '1400 m3'},
   ];
 
+  String get mNumber => widget.meterNumber;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meter Details'),
+        title: Text(mNumber),
       ),
-
       body: Column(
         children: [
           Expanded(
             child: _meterDetails.isNotEmpty
                 ? ListView.builder(
-              itemCount: _meterDetails.length,
-              itemBuilder: (context, index) {
-                final detail = _meterDetails[index];
-                return ListTile(
-                  title: Text(
-                    detail['date']!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                    itemCount: _meterDetails.length,
+                    itemBuilder: (context, index) {
+                      final detail = _meterDetails[index];
+                      return ListTile(
+                        title: Text(
+                          detail['date']!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text('Reading: ${detail['reading']}'),
+                      );
+                    },
+                  )
+                : const Center(
+                    child: Text(
+                      'No meter readings available.',
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
-                  subtitle: Text('Reading: ${detail['reading']}'),
-                );
-              },
-            )
-                : const Center(
-              child: Text(
-                'No meter readings available.',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
           ),
         ],
       ),
@@ -56,7 +60,8 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
           // Add a new meter reading (placeholder action for now)
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const MeterReadingFormPage()),
+            MaterialPageRoute(
+                builder: (context) => const MeterReadingFormPage()),
           );
         },
         child: const Icon(Icons.add),
