@@ -21,18 +21,6 @@ class _MetersPageState extends State<MetersPage> {
     'Meter #12345',
     'Meter #67890',
     'Meter #11223',
-    'Meter #12345',
-    'Meter #67890',
-    'Meter #11223',
-    'Meter #12345',
-    'Meter #67890',
-    'Meter #11223',
-    'Meter #12345',
-    'Meter #67890',
-    'Meter #11223',
-    'Meter #12345',
-    'Meter #67890',
-    'Meter #11223',
   ];
 
   @override
@@ -75,7 +63,7 @@ class _MetersPageState extends State<MetersPage> {
         ],
       ),
       // Floating Action Button
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add a new meter (placeholder action for now)
           Navigator.push(
@@ -83,7 +71,8 @@ class _MetersPageState extends State<MetersPage> {
             MaterialPageRoute(builder: (context) => const AddMeterPage()),
           );
         },
-        child: const Icon(Icons.add),
+        label: const Text('Add Meter'),
+        icon: const Icon(Icons.add),
       ),
     );
   }

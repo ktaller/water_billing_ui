@@ -20,7 +20,6 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
         builder: (context) => AlertDialog(
           title: const Text('Confirm Reading'),
           content: Text('Submit the reading: $reading m³?'),
-
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(), // Close the dialog
@@ -28,11 +27,11 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Perform the submit action
                 Navigator.of(context).pop(); // Close the dialog
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Reading submitted successfully!')),
                 );
+                _readingController.clear(); // Clear the form
               },
               child: const Text('Submit'),
             ),
@@ -42,45 +41,64 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
     }
   }
 
+  void _navigateBackToCustomerList() {
+    // Navigate back multiple pages
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Meter Reading Form'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _readingController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Meter Reading ',
-                  border: OutlineInputBorder(),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _readingController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Meter Reading',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a reading.';
+                    }
+                    final intValue = int.tryParse(value);
+                    if (intValue == null || intValue <= 0) {
+                      return 'Enter a valid positive number.';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a reading.';
-                  }
-                  final intValue = int.tryParse(value);
-                  if (intValue == null || intValue <= 0) {
-                    return 'Enter a valid positive number.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _submitReading,
-                  child: const Text('Submit'),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: 200.0, // Fixed width
+                  child: ElevatedButton(
+                    onPressed: _submitReading,
+                    child: const Text(
+                      'Submit',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22), // Make the text bold
+                    ),
+                  ),
                 ),
-              ),
-            ],
+
+
+
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: _navigateBackToCustomerList,
+                  child: const Text('Back to List'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

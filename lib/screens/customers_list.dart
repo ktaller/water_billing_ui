@@ -88,11 +88,11 @@ class _CustomersPageState extends State<CustomersPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const MetersPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const MetersPage()),
                     );
                   },
                 );
-
               },
             )
                 : const Center(
@@ -105,7 +105,7 @@ class _CustomersPageState extends State<CustomersPage> {
         ],
       ),
       // Floating Action Button
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Navigate to the RegistrationPage
           Navigator.push(
@@ -113,7 +113,8 @@ class _CustomersPageState extends State<CustomersPage> {
             MaterialPageRoute(builder: (context) => FormPage()),
           );
         },
-        child: const Icon(Icons.add),
+        label: const Text('Add Customer'), // Add text label
+        icon: const Icon(Icons.add), // Add the icon
       ),
     );
   }
