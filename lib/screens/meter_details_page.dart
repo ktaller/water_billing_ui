@@ -55,7 +55,7 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add a new meter reading (placeholder action for now)
           Navigator.push(
@@ -64,7 +64,8 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
                 builder: (context) => const MeterReadingFormPage()),
           );
         },
-        child: const Icon(Icons.add),
+        label: const Text('Add Meter-Reading'),
+       icon: const Icon(Icons.add),
       ),
     );
   }

@@ -114,7 +114,7 @@ class _MetersPageState extends State<MetersPage> {
         ],
       ),
       // Floating Action Button
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           // Add a new meter (placeholder action for now)
           setState(() {
@@ -128,7 +128,8 @@ class _MetersPageState extends State<MetersPage> {
             MaterialPageRoute(builder: (context) => const AddMeterPage()),
           );
         },
-        child: const Icon(Icons.add),
+        label: const Text('Add Meter'),
+        icon: const Icon(Icons.add),
       ),
     );
   }
