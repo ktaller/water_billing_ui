@@ -16,17 +16,21 @@ class CustomersPage extends StatefulWidget {
 
 class _CustomersPageState extends State<CustomersPage> {
   final TextEditingController _searchController = TextEditingController();
-  final List<Map<String, String>> _customers = [
-    {'id': '9999', 'name': 'John Doe', 'phone': '+254700123456'},
-  ];
+  final List<Map<String, String>> _customers = [];
 
   List<Map<String, String>> _filteredCustomers = [];
 
   @override
   void initState() {
     super.initState();
-    // _filteredCustomers = _customers;
     _searchController.addListener(_filterCustomers);
+    _fetchCustomers();
+  }
+
+  // FIXME: refresh the data onResume()
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _fetchCustomers();
   }
 

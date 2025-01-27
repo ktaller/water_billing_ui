@@ -75,6 +75,8 @@ class _MetersPageState extends State<MetersPage> {
 
   String get customerName => widget.customerName;
 
+  get cId => widget.customerId;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,9 +126,9 @@ class _MetersPageState extends State<MetersPage> {
             });
           });
           Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddMeterPage()),
-          );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddMeterPage(customerId: cId)));
         },
         label: const Text('Add Meter'),
         icon: const Icon(Icons.add),
