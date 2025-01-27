@@ -13,14 +13,15 @@ class MetersPage extends StatefulWidget {
   final String customerName;
   final int customerId;
 
-  const MetersPage({required this.customerName, required this.customerId});
+  const MetersPage(
+      {super.key, required this.customerName, required this.customerId});
 
   @override
   State<MetersPage> createState() => _MetersPageState();
 }
 
 class _MetersPageState extends State<MetersPage> {
-  List<Map<String, dynamic>> _meters = [];
+  final List<Map<String, dynamic>> _meters = [];
   bool _isLoading = true;
   String _error = '';
 

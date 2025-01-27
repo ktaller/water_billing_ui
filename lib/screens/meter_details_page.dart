@@ -10,8 +10,7 @@ import 'meter_reading_form_page.dart';
 class MeterDetailsPage extends StatefulWidget {
   final String meterNumber;
 
-  const MeterDetailsPage({required this.meterNumber, Key? key})
-      : super(key: key);
+  const MeterDetailsPage({required this.meterNumber, super.key});
 
   @override
   State<MeterDetailsPage> createState() => _MeterDetailsPageState();
@@ -49,8 +48,7 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
         setState(() {
           _meterDetails = decodedData.map((reading) {
             DateTime dateTime = DateTime.parse(reading['createdAt']);
-            double readingValue =
-                reading['currentReading'] - reading["previousReading"];
+            double readingValue = reading['currentReading'];
             return {
               'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime),
               'reading': readingValue.toStringAsFixed(3),
