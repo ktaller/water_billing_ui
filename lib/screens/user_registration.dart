@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:water_billing_ui/constants/constants.dart';
 
@@ -63,7 +62,11 @@ class FormPage extends StatelessWidget {
                     if (_formKey.currentState?.saveAndValidate() ?? false) {
                       _submitForm(context);
                     } else {
-                      Get.snackbar('Error', 'Please fill all required fields');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text('Error: Please fill all required fields')),
+                      );
                     }
                   },
                   child: Text('Submit'),
@@ -101,15 +104,20 @@ class FormPage extends StatelessWidget {
 
       if (response.statusCode == 200) {
         Navigator.pop(context);
-        // Get.snackbar('Success', 'Customer data submitted successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Customer data submitted successfully')));
         print("Success: Customer data submitted successfully");
       } else {
         print('Error: ${response.statusCode}: ${response.body}');
-        // Get.snackbar('Error', 'Error: ${response.statusCode}: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${response.body}')),
+        );
       }
     } catch (e) {
       print('Error: $e');
-      // Get.snackbar('Error', 'Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
   }
 }
