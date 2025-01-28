@@ -8,8 +8,6 @@ import 'add_meter_page.dart';
 import 'meter_details_page.dart';
 
 class MetersPage extends StatefulWidget {
-  // const MetersPage({super.key});
-  // receive customer ID and name as arguments
   final String customerName;
   final int customerId;
 
@@ -85,51 +83,50 @@ class _MetersPageState extends State<MetersPage> {
         // set customer name as the title
         title: Text(customerName),
       ),
-      body: Column(
-        children: [
-          // List of meters
-          Expanded(
-            child: _meters.isNotEmpty
-                ? ListView.builder(
-                    itemCount: _meters.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text("Meter #" + _meters[index]['meter_number']),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MeterDetailsPage(
-                                    meterNumber: _meters[index]
-                                        ['meter_number'])),
-                          );
-                        },
+      body: RefreshIndicator(
+        onRefresh: _fetchMeters, // Pull-to-refresh functionality
+        child: Column(
+          children: [
+            // List of meters
+            Expanded(
+              child: _meters.isNotEmpty
+                  ? ListView.builder(
+                itemCount: _meters.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text("Meter  #" + _meters[index]['meter_number']),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MeterDetailsPage(
+                                meterNumber: _meters[index]
+                                ['meter_number'])),
                       );
                     },
-                  )
-                : const Center(
-                    child: Text(
-                      'No meters found',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-          ),
-        ],
+                  );
+                },
+              )
+                  : _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Center(
+                child: Text(
+                  _error.isNotEmpty ? _error : 'No meters found',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       // Floating Action Button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Add a new meter (placeholder action for now)
-          setState(() {
-            _meters.add({
-              'id': _meters.length + 1,
-              'meter_number': 'Meter ${_meters.length + 1}',
-            });
-          });
+          // Navigate to the AddMeterPage
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddMeterPage(customerId: cId)));
+            context,
+            MaterialPageRoute(builder: (context) => AddMeterPage(customerId: cId)),
+          );
         },
         label: const Text('Add Meter'),
         icon: const Icon(Icons.add),
