@@ -50,7 +50,7 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
             DateTime dateTime = DateTime.parse(reading['createdAt']);
             double readingValue = reading['currentReading'];
             return {
-              'date': DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime),
+              'date': DateFormat('yyyy-MM-dd').format(dateTime),
               'reading': readingValue.toStringAsFixed(3),
             };
           }).toList();
@@ -129,7 +129,7 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
             ),
           );
         },
-        label: const Text('Add Meter-Reading'),
+        label: const Text('Add New Meter-Reading'),
         icon: const Icon(Icons.add),
       ),
     );

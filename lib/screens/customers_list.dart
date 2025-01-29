@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:water_billing_ui/constants/constants.dart';
@@ -63,7 +64,9 @@ class _CustomersPageState extends State<CustomersPage> {
       }
     } catch (e) {
       // Handle network errors
-      print('Error fetching customers: $e');
+      if (kDebugMode) {
+        print('Error fetching customers: $e');
+      }
     }
   }
 

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:water_billing_ui/constants/constants.dart';
-
 import 'add_meter_page.dart';
 import 'meter_details_page.dart';
 
@@ -47,7 +47,9 @@ class _MetersPageState extends State<MetersPage> {
         setState(() {
           _meters.clear();
           _meters.addAll(decodedData.map((meter) {
-            print('Meter: $meter');
+            if (kDebugMode) {
+              print('Meter: $meter');
+            }
             return {
               'id': meter['id'],
               'meter_number': meter['meterNumber'],
@@ -58,13 +60,17 @@ class _MetersPageState extends State<MetersPage> {
         setState(() {
           _error = 'Error: ${response.statusCode} - ${response.body}';
         });
-        print('Error: ${response.statusCode} - ${response.body}');
+        if (kDebugMode) {
+          print('Error: ${response.statusCode} - ${response.body}');
+        }
       }
     } catch (e) {
       setState(() {
         _error = 'Error fetching meters: $e';
       });
-      print('Error fetching meters: $e');
+      if (kDebugMode) {
+        print('Error fetching meters: $e');
+      }
     } finally {
       setState(() {
         _isLoading = false; // Set loading to false after request is complete
@@ -81,7 +87,7 @@ class _MetersPageState extends State<MetersPage> {
     return Scaffold(
       appBar: AppBar(
         // set customer name as the title
-        title: Text(customerName),
+        title: Text("$customerName's meters", style: TextStyle(fontWeight: FontWeight.bold),),
       ),
       body: RefreshIndicator(
         onRefresh: _fetchMeters, // Pull-to-refresh functionality

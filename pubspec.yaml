@@ -35,6 +35,8 @@ dependencies:
   get: ^4.6.5
   intl_phone_field: ^3.0.1
   mcassets: ^1.0.0
+  font_awesome_flutter: ^10.7.0
+
 
 
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:water_billing_ui/screens/customers_list.dart';
+import 'package:water_billing_ui/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,11 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Form App',
+      debugShowCheckedModeBanner: false, // Remove debug banner
+      title: 'Water Billing App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CustomersPage(), // Set CustomersPage as the initial page
+      home: const SplashScreen(), // Start with SplashScreen
     );
   }
 }
