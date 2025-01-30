@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Import FontAwesome for icons
 import 'package:http/http.dart' as http;
 import 'package:water_billing_ui/constants/constants.dart';
 import 'package:water_billing_ui/screens/user_registration.dart';
-
 import 'meters_page.dart';
 
 class CustomersPage extends StatefulWidget {
@@ -18,7 +17,6 @@ class CustomersPage extends StatefulWidget {
 class _CustomersPageState extends State<CustomersPage> {
   final TextEditingController _searchController = TextEditingController();
   final List<Map<String, String>> _customers = [];
-
   List<Map<String, String>> _filteredCustomers = [];
 
   @override
@@ -28,7 +26,6 @@ class _CustomersPageState extends State<CustomersPage> {
     _fetchCustomers();
   }
 
-  // FIXME: refresh the data onResume()
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -36,7 +33,6 @@ class _CustomersPageState extends State<CustomersPage> {
   }
 
   Future<void> _fetchCustomers() async {
-    // Replace with your actual API URL
     final url = Uri.parse('${Constants.SERVER_BASE_URL_API}/customers');
 
     try {
@@ -56,14 +52,12 @@ class _CustomersPageState extends State<CustomersPage> {
 
           print("Customers: $_customers");
 
-          _filteredCustomers = _customers; // Update filtered list as well
+          _filteredCustomers = _customers;
         });
       } else {
-        // Handle API errors
         print('Error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      // Handle network errors
       if (kDebugMode) {
         print('Error fetching customers: $e');
       }
@@ -91,10 +85,14 @@ class _CustomersPageState extends State<CustomersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customers List'),
+        title: const Text(
+          'Customers List',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+        ),
+        backgroundColor: Colors.indigoAccent,
       ),
       body: RefreshIndicator(
-        onRefresh: _fetchCustomers, // Call the fetch method on pull-down
+        onRefresh: _fetchCustomers,
         child: Column(
           children: [
             // Search bar
@@ -103,7 +101,7 @@ class _CustomersPageState extends State<CustomersPage> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  labelText: 'Search',
+                  labelText: 'Search customers...',
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -111,6 +109,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 ),
               ),
             ),
+
             // List of customers
             Expanded(
               child: _filteredCustomers.isNotEmpty
@@ -118,20 +117,47 @@ class _CustomersPageState extends State<CustomersPage> {
                 itemCount: _filteredCustomers.length,
                 itemBuilder: (context, index) {
                   final customer = _filteredCustomers[index];
-                  return ListTile(
-                    title: Text(customer['name']!),
-                    subtitle: Text(customer['phone']!),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          // pass the customer ID and name to the MetersPage
+                  return Card(
+                    elevation: 2,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 6),
+                    child: ListTile(
+                      leading: const CircleAvatar(
+                        backgroundColor: Colors.indigoAccent,
+                        child: Icon(
+                          Icons.person_outline_rounded,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Row(
+                        children: [
+                          // const Icon(Icons.person_outline, size: 18, color: Colors.grey),
+                          const SizedBox(width: 5),
+                          Text(
+                            customer['name']!,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      subtitle: Row(
+                        children: [
+                          // const Icon(Icons.phone, size: 16, color: Colors.grey),
+                          const SizedBox(width: 5),
+                          Text(customer['phone']!),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
                             builder: (context) => MetersPage(
                               customerId: int.parse(customer['id']!),
                               customerName: customer['name']!,
-                            )),
-                      );
-                    },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               )
@@ -145,17 +171,19 @@ class _CustomersPageState extends State<CustomersPage> {
           ],
         ),
       ),
-      // Floating Action Button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Navigate to the RegistrationPage
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => FormPage()),
           );
         },
-        label: const Text('Add Customer'), // Add text label
-        icon: const Icon(Icons.add), // Add the icon
+        label: const Text(
+          'Add Customer',
+          style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 16, color: Colors.white),
+        ),
+        icon: const Icon(Icons.add,color: Colors.white,),
+        backgroundColor: Colors.indigo,
       ),
     );
   }

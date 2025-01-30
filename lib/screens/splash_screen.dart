@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:water_billing_ui/screens/landing_page.dart';
 import 'customers_list.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,10 +16,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Set a delay of 1 second before navigating to the CustomersPage
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const CustomersPage()),
+        MaterialPageRoute(builder: (context) => const LandingPage()),
       );
     });
   }
@@ -62,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const Padding(
               padding: EdgeInsets.only(bottom: 30.0),
               child: Text(
-                'from Simply-Code',
+                'Simplified billing',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white70,
