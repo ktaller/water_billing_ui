@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // Import FontAwesome for icons
+// Import FontAwesome for icons
 import 'package:http/http.dart' as http;
 import 'package:water_billing_ui/constants/constants.dart';
 import 'package:water_billing_ui/screens/user_registration.dart';
