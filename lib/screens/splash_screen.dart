@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   get lastName => lastName;
 
   Future<Widget> _initializeApp() async {
-    await Future.delayed(const Duration(seconds: 5)); // Minimum 2-second delay
+    await Future.delayed(const Duration(seconds: 3)); // Minimum 2-second delay
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString(Constants.PREFERENCE_JWT_TOKEN);

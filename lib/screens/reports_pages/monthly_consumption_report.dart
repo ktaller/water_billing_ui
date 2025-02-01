@@ -113,7 +113,7 @@ class _MonthlyConsumptionReportState extends State<MonthlyConsumptionReport> {
                     // Chart
                     SizedBox(
                       height: MediaQuery.of(context).size.height *
-                          0.55, // Chart takes 70% of screen height
+                          0.35, // Chart takes 70% of screen height
                       child: BarChart(
                         BarChartData(
                           barGroups: _generateBarGroups(consumptionData),

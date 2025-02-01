@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,8 +63,10 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
           isLoading = false;
         });
       } else {
-        print(
-            'Error fetching data: ${response.statusCode}, ${response.body}'); // Log the error
+        if (kDebugMode) {
+          print(
+            'Error fetching data: ${response.statusCode}, ${response.body}');
+        } // Log the error
         setState(() {
           isLoading = false;
         });
@@ -74,7 +77,9 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
         );
       }
     } catch (error) {
-      print('Error fetching data: $error');
+      if (kDebugMode) {
+        print('Error fetching data: $error');
+      }
       setState(() {
         isLoading = false;
       });
@@ -124,7 +129,7 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
                     // Chart Container
                     SizedBox(
                       height: MediaQuery.of(context).size.height *
-                          0.55, // 70% screen height
+                          0.35, // screen height
                       child: BarChart(
                         BarChartData(
                           barGroups: _generateBarGroups(incomeData),
@@ -137,13 +142,14 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
                             leftTitles: AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                reservedSize: 60,
+                                reservedSize: 80,
                                 getTitlesWidget:
                                     (double value, TitleMeta meta) {
-                                  if (value < 30000)
+                                  if (value < 30000) {
                                     return const SizedBox(); // Hide values below 30,000
+                                  }
                                   return Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
+                                    padding: const EdgeInsets.only(right: 2.0),
                                     child: Text("Ksh ${value.toInt()}"),
                                   );
                                 },
@@ -184,7 +190,7 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
                     // Total Expected Income
                     Text(
                       // display 2 decimal places in money and separate by comma
-                      "From the above chart, it is fair to conclude- \nTotal expected income this year: Ksh.${totalIncome.toStringAsFixed(2).replaceAllMapped(
+                      "Total expected income this year: Ksh.${totalIncome.toStringAsFixed(2).replaceAllMapped(
                             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                             (Match m) => '${m[1]},',
                           )}",
