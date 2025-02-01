@@ -23,6 +23,7 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
   void _submitReading() async {
     if (_formKey.currentState!.validate()) {
       final reading = double.parse(_readingController.text);
+      final localDateTime = DateTime.now().toLocal();
 
       showDialog(
         context: context,
@@ -53,6 +54,7 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
                   final meterReadingData = {
                     "meterNumber": widget.meterNumber,
                     "currentReading": reading,
+                    "currentDateTime": localDateTime.toIso8601String(),
                   };
 
                   final response = await http.post(
