@@ -87,7 +87,7 @@ class _CustomersPageState extends State<CustomersPage> {
       appBar: AppBar(
         title: const Text(
           'Customers List',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30,color: Colors.white),
         ),
         backgroundColor: Colors.indigoAccent,
       ),
