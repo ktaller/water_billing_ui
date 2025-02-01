@@ -56,16 +56,26 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
         setState(() {
           _meterDetails = decodedData.map((reading) {
             DateTime dateTime = DateTime.parse(reading['createdAt']);
-            double readingValue = reading['currentReading'];
-            double amountToPay = reading['amountToPay'] ?? 0.0; // Default to 0 if null
+            double readingValue =
+                reading['currentReading'] - reading['previousReading'];
+            double amountToPay =
+                reading['meter']['meterType']['rate'] * readingValue ??
+                    0.0; // Default to 0 if null
 
             return {
               'date': DateFormat('yyyy-MM-dd').format(dateTime),
-              'reading': readingValue.toStringAsFixed(3),
-              'amountToPay': amountToPay.toStringAsFixed(2), // Format to 2 decimal places
+              'reading': readingValue.toStringAsFixed(3).replaceAllMapped(
+                    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                    (Match m) => '${m[1]},',
+                  ),
+              'amountToPay': amountToPay.toStringAsFixed(2).replaceAllMapped(
+                    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                    (Match m) => '${m[1]},',
+                  ),
             };
           }).toList();
         });
+        log("MeterDetails: $_meterDetails\nResponseData: $decodedData");
       } else {
         setState(() {
           _error = 'Error: ${response.statusCode} - ${response.body}';
@@ -95,47 +105,47 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error.isNotEmpty
-          ? Center(child: Text(_error))
-          : _meterDetails.isNotEmpty
-          ? RefreshIndicator(
-        onRefresh: _fetchMeterReadings,
-        child: ListView.builder(
-          itemCount: _meterDetails.length,
-          itemBuilder: (context, index) {
-            final detail = _meterDetails[index];
-            return ListTile(
-              title: Text(
-                detail['date'] ?? 'N/A',
-                style:
-                const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                  'Reading: ${detail['reading'] ?? 'N/A'} m³'),
-              trailing: Text(
-                'Ksh ${detail['amountToPay'] ?? '0.00'}',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green),
-              ), // Amount to Pay displayed on the right
-            );
-          },
-        ),
-      )
-          : Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'No meter readings available.',
-              style: TextStyle(fontSize: 16),
-            ),
-            ElevatedButton(
-              onPressed: _fetchMeterReadings,
-              child: const Text('Refresh'),
-            ),
-          ],
-        ),
-      ),
+              ? Center(child: Text(_error))
+              : _meterDetails.isNotEmpty
+                  ? RefreshIndicator(
+                      onRefresh: _fetchMeterReadings,
+                      child: ListView.builder(
+                        itemCount: _meterDetails.length,
+                        itemBuilder: (context, index) {
+                          final detail = _meterDetails[index];
+                          return ListTile(
+                            title: Text(
+                              detail['date'] ?? 'N/A',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                                'Reading: ${detail['reading'] ?? 'N/A'} m³'),
+                            trailing: Text(
+                              'Ksh ${detail['amountToPay'] ?? '0.00'}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
+                            ), // Amount to Pay displayed on the right
+                          );
+                        },
+                      ),
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'No meter readings available.',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          ElevatedButton(
+                            onPressed: _fetchMeterReadings,
+                            child: const Text('Refresh'),
+                          ),
+                        ],
+                      ),
+                    ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
