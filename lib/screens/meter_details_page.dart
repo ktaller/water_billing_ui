@@ -56,11 +56,10 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
         setState(() {
           _meterDetails = decodedData.map((reading) {
             DateTime dateTime = DateTime.parse(reading['createdAt']);
-            double readingValue =
-                reading['currentReading'] - reading['previousReading'];
-            double amountToPay =
-                reading['meter']['meterType']['rate'] * readingValue ??
-                    0.0; // Default to 0 if null
+            double readingValue =reading['currentReading'];
+            double amountToPay = reading['meter']['meterType']['rate'] *
+                (reading['currentReading'] - reading['previousReading'])??
+                0.0; // Default to 0 if null
 
             return {
               'date': DateFormat('yyyy-MM-dd').format(dateTime),
