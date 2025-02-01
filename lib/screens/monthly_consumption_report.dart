@@ -163,7 +163,11 @@ class _MonthlyConsumptionReportState extends State<MonthlyConsumptionReport> {
 
                     // Total Year's Consumption Report
                     Text(
-                      "From the above chart, it is fair to conclude that: \nTotal yearly consumption: $totalConsumption units",
+                      // separate the total consumption using commas in thousands
+                      "From the above chart, it is fair to conclude that: \nTotal yearly consumption: ${totalConsumption.toString().replaceAllMapped(
+                            RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                            (Match m) => '${m[1]},',
+                          )} units",
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
