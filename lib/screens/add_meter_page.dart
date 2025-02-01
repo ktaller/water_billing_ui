@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_billing_ui/constants/constants.dart';
 
 class AddMeterPage extends StatefulWidget {
@@ -54,7 +56,7 @@ class _AddMeterPageState extends State<AddMeterPage> {
         "isActive": _isActive,
       };
 
-      print("Meter Data: $meterData");
+      log("Meter Data: $meterData");
 
       showDialog(
         context: context,
@@ -75,6 +77,9 @@ class _AddMeterPageState extends State<AddMeterPage> {
             ),
             ElevatedButton(
               onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                String? token = prefs.getString(Constants.PREFERENCE_JWT_TOKEN);
+
                 Navigator.of(context).pop(); // Close the dialog
 
                 // Send POST request to create meter on server
@@ -82,7 +87,10 @@ class _AddMeterPageState extends State<AddMeterPage> {
                     Uri.parse('${Constants.SERVER_BASE_URL_API}/meters/create');
                 final response = await http.post(
                   url,
-                  headers: {'Content-Type': 'application/json'},
+                  headers: {
+                    'Authorization': 'Bearer $token',
+                    'Content-Type': 'application/json'
+                  },
                   body: jsonEncode(meterData),
                 );
 
@@ -92,10 +100,10 @@ class _AddMeterPageState extends State<AddMeterPage> {
                   );
                   // Clear the form after successful submission (optional)
                   _formKey.currentState!.reset();
-                  print('Meter added successfully!');
+                  log('Meter added successfully!');
                   Navigator.pop(context);
                 } else {
-                  print('Error: ${response.statusCode}: ${response.body}');
+                  log('Error: ${response.statusCode}: ${response.body}');
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Error: ${response.body}')),
                   );

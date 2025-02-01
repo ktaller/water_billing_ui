@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_billing_ui/constants/constants.dart';
 
 import 'meter_reading_form_page.dart';
@@ -34,12 +36,18 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
     });
 
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString(Constants.PREFERENCE_JWT_TOKEN);
+
       final url = Uri.parse(
           '${Constants.SERVER_BASE_URL_API}/meter-readings/get-by-meter');
       final body = jsonEncode({"meterNumber": widget.meterNumber});
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json'
+        },
         body: body,
       );
 
@@ -59,13 +67,13 @@ class _MeterDetailsPageState extends State<MeterDetailsPage> {
         setState(() {
           _error = 'Error: ${response.statusCode} - ${response.body}';
         });
-        print('Error: ${response.statusCode} - ${response.body}');
+        log('Error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
       setState(() {
         _error = 'Error fetching meter readings: $e';
       });
-      print('Error fetching meter readings: $e');
+      log('Error fetching meter readings: $e');
     } finally {
       setState(() {
         _isLoading = false;

@@ -1,4 +1,11 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:water_billing_ui/constants/constants.dart';
+import 'package:water_billing_ui/screens/landing_page.dart';
 import 'package:water_billing_ui/screens/registration_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -19,21 +27,74 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void _login() {
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true; // Show loading indicator
+    });
+
     String email = _emailController.text;
     String password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("All fields are required")),
+        const SnackBar(content: Text("All fields are required")),
       );
+      setState(() {
+        _isLoading = false; // Hide loading indicator
+      });
       return;
     }
 
-    // Simulate successful login
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Login Successful")),
-    );
+    try {
+      final url =
+          Uri.parse('${Constants.SERVER_BASE_URL_API}/auth/authenticate');
+      final response = await http.post(
+        url,
+        body: jsonEncode({'email': email, 'password': password}),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        // Successful login
+        final responseData = jsonDecode(response.body);
+        final token = responseData['token'];
+
+        log("Login Token: $token");
+
+        if (token != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString(Constants.PREFERENCE_JWT_TOKEN, token);
+
+          log("Token Saved: $token");
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Login Successful")),
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LandingPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Something went wrong!")),
+          );
+        }
+      } else {
+        // Failed login
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Invalid credentials")),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred: $error")),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide loading indicator
+      });
+    }
   }
 
   @override
@@ -99,19 +160,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: _login,
+                  onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    textStyle:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  child: const Text("Login"),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text("Login"),
                 ),
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegistrationPage()),
+                      MaterialPageRoute(
+                          builder: (context) => const RegistrationPage()),
                     );
                   },
                   child: RichText(
@@ -128,7 +193,8 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.white,
-                            decoration: TextDecoration.underline, // Underline only "Login"
+                            decoration: TextDecoration.underline,
+                            // Underline only "Login"
                             fontWeight: FontWeight.bold,
                           ),
                         ),
