@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_billing_ui/constants/constants.dart';
 
 class MeterReadingFormPage extends StatefulWidget {
@@ -41,6 +43,11 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
                 });
 
                 try {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  String? token =
+                      prefs.getString(Constants.PREFERENCE_JWT_TOKEN);
+
                   final url = Uri.parse(
                       '${Constants.SERVER_BASE_URL_API}/meter-readings/create');
                   final meterReadingData = {
@@ -50,7 +57,10 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
 
                   final response = await http.post(
                     url,
-                    headers: {'Content-Type': 'application/json'},
+                    headers: {
+                      'Authorization': 'Bearer $token',
+                      'Content-Type': 'application/json'
+                    },
                     body: jsonEncode(meterReadingData),
                   );
 
@@ -67,13 +77,13 @@ class _MeterReadingFormPageState extends State<MeterReadingFormPage> {
                           content: Text(
                               'Error: ${response.statusCode} - ${response.body}')),
                     );
-                    print('Error: ${response.statusCode}: ${response.body}');
+                    log('Error: ${response.statusCode}: ${response.body}');
                   }
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Error: $e')),
                   );
-                  print('Error: $e');
+                  log('Error: $e');
                 } finally {
                   setState(() {
                     _isLoading = false;

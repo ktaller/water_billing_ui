@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_billing_ui/constants/constants.dart';
 
 import 'form_controller.dart';
@@ -82,7 +84,7 @@ class FormPage extends StatelessWidget {
   Future<void> _submitForm(BuildContext context) async {
     final formData = _formKey.currentState?.value;
 
-    print("Form Data: $formData");
+    log("Form Data: $formData");
 
     final requestJson = {
       "firstName": formData!['firstName'].toString().trim(),
@@ -93,12 +95,17 @@ class FormPage extends StatelessWidget {
     };
 
     try {
-      // Replace with your actual API URL
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString(Constants.PREFERENCE_JWT_TOKEN);
+
       final url =
           Uri.parse('${Constants.SERVER_BASE_URL_API}/customers/create');
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json'
+        },
         body: jsonEncode(requestJson),
       );
 
@@ -106,15 +113,15 @@ class FormPage extends StatelessWidget {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Customer data submitted successfully')));
-        print("Success: Customer data submitted successfully");
+        log("Success: Customer data submitted successfully");
       } else {
-        print('Error: ${response.statusCode}: ${response.body}');
+        log('Error: ${response.statusCode}: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${response.body}')),
         );
       }
     } catch (e) {
-      print('Error: $e');
+      log('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );

@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 // Import FontAwesome for icons
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_billing_ui/constants/constants.dart';
 import 'package:water_billing_ui/screens/user_registration.dart';
+
 import 'meters_page.dart';
 
 class CustomersPage extends StatefulWidget {
@@ -33,10 +37,18 @@ class _CustomersPageState extends State<CustomersPage> {
   }
 
   Future<void> _fetchCustomers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString(Constants.PREFERENCE_JWT_TOKEN);
+
     final url = Uri.parse('${Constants.SERVER_BASE_URL_API}/customers');
 
     try {
-      final response = await http.post(url);
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
 
       if (response.statusCode == 200) {
         final decodedData = jsonDecode(response.body) as List;
@@ -50,16 +62,16 @@ class _CustomersPageState extends State<CustomersPage> {
             };
           }));
 
-          print("Customers: $_customers");
+          log("Customers: $_customers");
 
           _filteredCustomers = _customers;
         });
       } else {
-        print('Error: ${response.statusCode} - ${response.body}');
+        log('Error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching customers: $e');
+        log('Error fetching customers: $e');
       }
     }
   }
@@ -69,8 +81,8 @@ class _CustomersPageState extends State<CustomersPage> {
     setState(() {
       _filteredCustomers = _customers
           .where((customer) =>
-      customer['name']!.toLowerCase().contains(query) ||
-          customer['phone']!.contains(query))
+              customer['name']!.toLowerCase().contains(query) ||
+              customer['phone']!.contains(query))
           .toList();
     });
   }
@@ -114,59 +126,61 @@ class _CustomersPageState extends State<CustomersPage> {
             Expanded(
               child: _filteredCustomers.isNotEmpty
                   ? ListView.builder(
-                itemCount: _filteredCustomers.length,
-                itemBuilder: (context, index) {
-                  final customer = _filteredCustomers[index];
-                  return Card(
-                    elevation: 2,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 6),
-                    child: ListTile(
-                      leading: const CircleAvatar(
-                        backgroundColor: Colors.indigoAccent,
-                        child: Icon(
-                          Icons.person_outline_rounded,
-                          color: Colors.white,
-                        ),
-                      ),
-                      title: Row(
-                        children: [
-                          // const Icon(Icons.person_outline, size: 18, color: Colors.grey),
-                          const SizedBox(width: 5),
-                          Text(
-                            customer['name']!,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        children: [
-                          // const Icon(Icons.phone, size: 16, color: Colors.grey),
-                          const SizedBox(width: 5),
-                          Text(customer['phone']!),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MetersPage(
-                              customerId: int.parse(customer['id']!),
-                              customerName: customer['name']!,
+                      itemCount: _filteredCustomers.length,
+                      itemBuilder: (context, index) {
+                        final customer = _filteredCustomers[index];
+                        return Card(
+                          elevation: 2,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          child: ListTile(
+                            leading: const CircleAvatar(
+                              backgroundColor: Colors.indigoAccent,
+                              child: Icon(
+                                Icons.person_outline_rounded,
+                                color: Colors.white,
+                              ),
                             ),
+                            title: Row(
+                              children: [
+                                // const Icon(Icons.person_outline, size: 18, color: Colors.grey),
+                                const SizedBox(width: 5),
+                                Text(
+                                  customer['name']!,
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            subtitle: Row(
+                              children: [
+                                // const Icon(Icons.phone, size: 16, color: Colors.grey),
+                                const SizedBox(width: 5),
+                                Text(customer['phone']!),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MetersPage(
+                                    customerId: int.parse(customer['id']!),
+                                    customerName: customer['name']!,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
-                    ),
-                  );
-                },
-              )
+                    )
                   : const Center(
-                child: Text(
-                  'No customers found',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
+                      child: Text(
+                        'No customers found',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -180,9 +194,13 @@ class _CustomersPageState extends State<CustomersPage> {
         },
         label: const Text(
           'Add Customer',
-          style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 16, color: Colors.white),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
         ),
-        icon: const Icon(Icons.add,color: Colors.white,),
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.indigo,
       ),
     );
