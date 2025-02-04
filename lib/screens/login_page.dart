@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     setState(() {
-      _isLoading = true; // Show loading indicator
+      _isLoading = true;
     });
 
     String email = _emailController.text;
@@ -40,14 +40,13 @@ class _LoginPageState extends State<LoginPage> {
         const SnackBar(content: Text("All fields are required")),
       );
       setState(() {
-        _isLoading = false; // Hide loading indicator
+        _isLoading = false;
       });
       return;
     }
 
     try {
-      final url =
-          Uri.parse('${Constants.SERVER_BASE_URL_API}/auth/authenticate');
+      final url = Uri.parse('${Constants.SERVER_BASE_URL_API}/auth/authenticate');
       final response = await http.post(
         url,
         body: jsonEncode({'email': email, 'password': password}),
@@ -55,7 +54,6 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (response.statusCode == 200) {
-        // Successful login
         final responseData = jsonDecode(response.body);
         final token = responseData['token'];
 
@@ -81,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       } else {
-        // Failed login
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Invalid credentials")),
         );
@@ -92,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } finally {
       setState(() {
-        _isLoading = false; // Hide loading indicator
+        _isLoading = false;
       });
     }
   }
@@ -158,13 +155,31 @@ class _LoginPageState extends State<LoginPage> {
                     filled: true,
                   ),
                 ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    // TODO: Navigate to Reset Password Page
+                  },
+                  child: const Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "Reset Password",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     textStyle:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   child: _isLoading
                       ? const CircularProgressIndicator()
@@ -194,7 +209,6 @@ class _LoginPageState extends State<LoginPage> {
                             fontSize: 18,
                             color: Colors.white,
                             decoration: TextDecoration.underline,
-                            // Underline only "Login"
                             fontWeight: FontWeight.bold,
                           ),
                         ),

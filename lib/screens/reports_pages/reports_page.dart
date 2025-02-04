@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'expected_income_page.dart';
 import 'monthly_consumption_report.dart';
+import 'leakage_page.dart';
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
@@ -56,18 +57,18 @@ class ReportsPage extends StatelessWidget {
                   );
                 },
               ),
-              _buildReportCard(
-                context,
-                icon: FontAwesomeIcons.droplet,
-                title: 'Leakage',
-                description: 'Identify and analyze potential water leakage.',
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LeakagePage()),
-                  );
-                },
-              ),
+              // _buildReportCard(
+              //   context,
+              //   icon: FontAwesomeIcons.droplet,
+              //   title: 'Leakage',
+              //   description: 'Identify and analyze potential water leakage.',
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => LeakagePage()),
+              //     );
+              //   },
+              // ),
             ],
           ),
         ),
