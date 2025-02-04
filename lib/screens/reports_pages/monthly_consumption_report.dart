@@ -102,8 +102,8 @@ class _MonthlyConsumptionReportState extends State<MonthlyConsumptionReport> {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      "This chart represents the monthly water consumption in units. "
-                      "Each bar represents the consumption for a given month. "
+                      "This chart represents the monthly water consumption in units. \n"
+                      "Each bar represents the consumption for a given month. \n"
                       "Use this data to analyze trends and detect usage patterns.",
                       style: TextStyle(fontSize: 18),
                       textAlign: TextAlign.justify,
@@ -164,7 +164,7 @@ class _MonthlyConsumptionReportState extends State<MonthlyConsumptionReport> {
                     // Total Year's Consumption Report
                     Text(
                       // separate the total consumption using commas in thousands
-                      "From the above chart, it is fair to conclude that: \nTotal yearly consumption: ${totalConsumption.toString().replaceAllMapped(
+                      "Total yearly consumption as per the data: ${totalConsumption.toString().replaceAllMapped(
                             RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                             (Match m) => '${m[1]},',
                           )} units",

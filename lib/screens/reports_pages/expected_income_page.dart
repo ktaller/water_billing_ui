@@ -133,7 +133,7 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
                       child: BarChart(
                         BarChartData(
                           barGroups: _generateBarGroups(incomeData),
-                          minY: 30000,
+                          minY: 1000,
                           // Start y-axis at 30,000
                           maxY: incomeData.reduce((a, b) => a > b ? a : b) +
                               20000,
@@ -142,10 +142,10 @@ class _ExpectedIncomeReportState extends State<ExpectedIncomeReport> {
                             leftTitles: AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                reservedSize: 80,
+                                reservedSize: 60,
                                 getTitlesWidget:
                                     (double value, TitleMeta meta) {
-                                  if (value < 30000) {
+                                  if (value < 1000) {
                                     return const SizedBox(); // Hide values below 30,000
                                   }
                                   return Padding(

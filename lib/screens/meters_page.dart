@@ -96,12 +96,17 @@ class _MetersPageState extends State<MetersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // set customer name as the title
+        backgroundColor: Colors.indigoAccent, // Set background color to indigo
         title: Text(
           "$customerName's meters",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 26,
+            color: Colors.white, // Set text color to white
+          ),
         ),
       ),
+
       body: RefreshIndicator(
         onRefresh: _fetchMeters, // Pull-to-refresh functionality
         child: Column(
@@ -111,22 +116,34 @@ class _MetersPageState extends State<MetersPage> {
               child: _meters.isNotEmpty
                   ? ListView.builder(
                       itemCount: _meters.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title:
-                              Text("Meter  #" + _meters[index]['meter_number']),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MeterDetailsPage(
-                                      meterNumber: _meters[index]
-                                          ['meter_number'])),
-                            );
-                          },
+                itemBuilder: (context, index) {
+                  return Card(
+                    elevation: 4, // Add elevation for a lifted effect
+                    margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10), // Adjust spacing
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Rounded corners
+                    ),
+                    child: ListTile(
+                      leading: const Icon(Icons.water, color: Colors.blue),
+                      title: Text(
+                        "Meter Number " + _meters[index]['meter_number'],
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MeterDetailsPage(
+                              meterNumber: _meters[index]['meter_number'],
+                            ),
+                          ),
                         );
                       },
-                    )
+                    ),
+                  );
+                },
+
+              )
                   : _isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : Center(
@@ -146,12 +163,22 @@ class _MetersPageState extends State<MetersPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => AddMeterPage(customerId: cId)),
+              builder: (context) => AddMeterPage(customerId: cId),
+            ),
           );
         },
-        label: const Text('Add Meter'),
-        icon: const Icon(Icons.add),
+        label: const Text(
+          'Add Meter',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white, // White text
+            fontWeight: FontWeight.bold, // Bold text
+          ),
+        ),
+        icon: const Icon(Icons.add, color: Colors.white), // White icon
+        backgroundColor: Colors.indigo, // Indigo background
       ),
+
     );
   }
 }
