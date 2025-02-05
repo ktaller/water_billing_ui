@@ -1,0 +1,17 @@
+image: instrumentisto/flutter:latest
+
+definitions:
+  caches:
+    flutter: ~/.pub-cache
+
+pipelines:
+  default:
+    - step:
+        name: Build Flutter APK
+        caches:
+          - flutter
+        script:
+          - flutter pub get
+          - flutter build apk --release
+        artifacts:
+          - build/app/outputs/flutter-apk/app-release.apk
