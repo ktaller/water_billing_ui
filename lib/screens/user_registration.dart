@@ -19,7 +19,8 @@ class FormPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Customer details'),
+        title: Text(style: TextStyle(color: Colors.white,fontSize: 28),'Customer details'),
+        backgroundColor: Colors.indigoAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -71,7 +72,7 @@ class FormPage extends StatelessWidget {
                       );
                     }
                   },
-                  child: Text('Submit'),
+                  child: Text(style: TextStyle(fontSize: 16),'Submit'),
                 ),
               ],
             ),
